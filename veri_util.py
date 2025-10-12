@@ -69,11 +69,37 @@ def activated_weight_bias(model,activated_set):
     B_inact = [W_i,r_i] # W_a x <= r_a
     return W_overl, r_overl, B_act, B_inact
 
-# ToDo: def random_walk()
-# Loop
-# u <- grad(b)
-# if activated changes:
-#     if b across 0-level set
-#         find intersection and the activated set contains b(x)=0
-#     else
-#         update activated set and continue loop
+def find_one_zero_point_autograd(data,model_input):
+    model=model_input
+
+    # randomly pick initial points
+    index = np.random.randint(0, len(data))
+    xi = data[index]
+
+    # back propagation training
+    learning_rate = 1e-1
+    x_restart = data[index]
+    x_i = torch.tensor(xi, requires_grad=True)
+    y_i = model(x_i)
+    loss = abs(y_i)
+    epoch = 0.0
+    while loss > 0.000001:
+        epoch = epoch + 1
+        loss.backward()
+
+        beta = 0.01
+        gamma = 1.0
+        rate = learning_rate / (1 + beta * epoch ** gamma)
+        with torch.no_grad():
+            x_i = x_i - rate * x_i.grad
+            x_i.grad = None
+        x_i.requires_grad = True
+        y_i = model(x_i)
+        loss = abs(y_i)
+        if epoch > 1000:
+            with torch.no_grad():
+                x_i = torch.tensor(x_restart, requires_grad=True)
+                print(x_i, 'Please restart the function and run again')
+                epoch = 0
+
+    return x_i

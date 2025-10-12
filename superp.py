@@ -112,7 +112,7 @@ BATCHES = max(BATCHES_I, BATCHES_U, BATCHES_D)
 ############################################
 # for plotting
 ############################################
-PLOT_EXP_B = np.array([8, 8]) # sampling from domain for plotting the boundary of barrier using contour plot
+PLOT_EXP_B = np.array([6, 6]) # sampling from domain for plotting the boundary of barrier using contour plot
 PLOT_LEN_B = np.power(2, PLOT_EXP_B) # the number of samples for each dimension of domain, usually larger than superp.DATA_LEN_D
 
 PLOT_EXP_V = np.array([6, 6]) # sampling from domain for plotting the vector field
